@@ -32,7 +32,20 @@
 
         </Grid>
         <Button Name="WatchButton" Content="Watch" Margin="4" Grid.Row="2" Click="WatchButton_Click" IsEnabled="False" Height="25"/>
-        <ListBox Name="WatchOutPut" Margin="4" Grid.Row="3"/>
+        <ListBox Name="WatchOutPut" Margin="4" Grid.Row="3">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="100"/>
+                        </Grid.ColumnDefinitions>
+                        <Label Content="{Binding Path=Path}" Grid.Column="0"/>
+                        <Label Content="{Binding Path=Version}" Width="100" Grid.Column="1" FontStyle=""/>
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
 
     </Grid>
 </Window>

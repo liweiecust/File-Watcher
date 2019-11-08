@@ -12,3 +12,4 @@ D:\Git\FileWatcher\FileWatcher\obj\Debug\FileWatcher.csproj.GenerateResource.cac
 D:\Git\FileWatcher\FileWatcher\obj\Debug\FileWatcher.csproj.CoreCompileInputs.cache
 D:\Git\FileWatcher\FileWatcher\obj\Debug\FileWatcher.exe
 D:\Git\FileWatcher\FileWatcher\obj\Debug\FileWatcher.pdb
+D:\Git\FileWatcher\FileWatcher\obj\Debug\FileWatcher.csprojAssemblyReference.cache

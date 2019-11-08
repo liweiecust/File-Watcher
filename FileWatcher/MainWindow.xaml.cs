@@ -26,13 +26,12 @@ namespace FileWatcher
         private FileSystemWatcher watcher;
         public MainWindow()
         {
-            var d = Directory.GetLogicalDrives();
             InitializeComponent();
             watcher = new FileSystemWatcher();
-            watcher.Deleted += (s, e) => AddMessage($"File: {e.FullPath} Deleted.");
-            watcher.Renamed += (s, e) => AddMessage($"File: renamed from {e.OldName} to {e.FullPath} ");
-            watcher.Changed += (s, e) => AddMessage($"File: {e.FullPath} {e.ChangeType.ToString()}");
-            watcher.Created += (s, e) => AddMessage($"File: {e.FullPath} Created.");
+            watcher.Deleted += (s, e) => AddMessage(e.FullPath, "Deleted");
+            watcher.Renamed += (s, e) => RenameMessage(e.OldName, $"renamed as {e.FullPath}");
+            watcher.Changed += (s, e) => AddMessage(e.FullPath, e.ChangeType.ToString());
+            watcher.Created += (s, e) => AddMessage(e.FullPath, "Created");
         }
 
         private void LocationBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -72,7 +71,7 @@ namespace FileWatcher
                 if (folder == null || folder == true)
                 {
                     watcher.Path = LocationBox.Text;
-                    watcher.Filter = System.IO.Path.GetFileName(LocationBox.Text);
+                    //watcher.Filter = System.IO.Path.GetFileName(LocationBox.Text);
                 }
                 else
                 {
@@ -80,8 +79,8 @@ namespace FileWatcher
                     watcher.Filter = System.IO.Path.GetFileName(LocationBox.Text);
                 }
                 watcher.IncludeSubdirectories = true;
-                watcher.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.Size;
-                AddMessage("Watching " + LocationBox.Text);
+                watcher.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.Size|NotifyFilters.CreationTime|NotifyFilters.DirectoryName;
+                DitributeMessage(LocationBox.Text,"Watching " + LocationBox.Text);
                 watcher.EnableRaisingEvents = true;
                 WatchButton.Content = "Stop";
 
@@ -94,9 +93,31 @@ namespace FileWatcher
           
 
         }
-        public void AddMessage(string message)
+        public void AddMessage(string path,string type)
         {
-            Dispatcher.BeginInvoke(new Action(() => WatchOutPut.Items.Insert(0, DateTime.Now.ToString()+" "+ message)));
+            string message = string.Format("{0} File: {1} {2}",DateTime.Now.ToString(),path,type);
+            DitributeMessage(path, message);
         }
+        public void RenameMessage(string path, string newPath)
+        {
+            string message = string.Format("{0} File: {1} Renamed as {1}", path, newPath);
+            DitributeMessage(path, message);
+        }
+        public void DitributeMessage(string path,string message)
+        {
+            string version = "";
+            if (File.Exists(path))
+            {
+                version = System.Diagnostics.FileVersionInfo.GetVersionInfo(path).FileVersion;
+                if(version!=null)
+                {
+                    version = string.Format("File version: {0}", version);
+                }
+                
+            }
+
+            Dispatcher.BeginInvoke(new Action(() => WatchOutPut.Items.Insert(0, new VisualFile(message, version))));
+        }
+        
     }
 }
